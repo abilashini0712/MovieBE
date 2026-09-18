@@ -9,20 +9,20 @@ namespace MovieTicketBookingSystemBE.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class RegisterController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public AuthController(ApplicationDbContext context)
+        public RegisterController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-       
+
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
-           
+
             var existingUser = await _context.Registers
                 .FirstOrDefaultAsync(x => x.Email == dto.Email);
 
@@ -31,7 +31,7 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Email already exists.");
             }
 
-         
+
             var user = new Register
             {
                 Name = dto.Name,
@@ -50,7 +50,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             });
         }
 
-        
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto dto)
         {

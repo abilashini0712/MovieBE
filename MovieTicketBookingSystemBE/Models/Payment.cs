@@ -6,7 +6,7 @@ namespace MovieTicketBookingSystemBE.Models
     public class Payment
     {
         [Key]
-        public int PaymentId { get; set; }
+        public int? PaymentId { get; set; }
         public int? BookingId { get; set; }
         public string? name { get; set; } 
         public string? number { get; set; } 
