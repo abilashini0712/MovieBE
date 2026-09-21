@@ -1,18 +1,18 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.ComponentModel.DataAnnotations;
-
-namespace MovieTicketBookingSystemBE.Models
+﻿namespace MovieTicketBookingSystemBE.Models
 {
     public class Movie
     {
-        [Key]
-        public int MovieId { get; set; }
-        public string? image { get; set; }
-      
-        public string? title { get; set; } 
-       
-        public string? gener { get; set; }
-       
-        public string? duration { get; set; } 
+        public int id { get; set; }
+
+        public string image { get; set; } = string.Empty;
+
+        public string title { get; set; } = string.Empty;
+
+        public string gener { get; set; } = string.Empty;
+
+        public string duration { get; set; } = string.Empty;
     }
 }
+
+
+

@@ -13,6 +13,7 @@ namespace MovieTicketBookingSystemBE.Data
         }
 
         public DbSet<Register> Registers { get; set; }
+       
         public DbSet<Login> Logins { get; set; }
 
         public DbSet<Movie> Movies { get; set; }
@@ -20,6 +21,8 @@ namespace MovieTicketBookingSystemBE.Data
         public DbSet<Booking> Bookings { get; set; }
 
         public DbSet<Payment> Payments { get; set; }
+
+      
     }
 }
 

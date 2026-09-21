@@ -1,20 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace MovieTicketBookingSystemBE.Models
+﻿namespace MovieTicketBookingSystemBE.Models
 {
     public class Payment
     {
-        [Key]
-        public int? PaymentId { get; set; }
-        public int? BookingId { get; set; }
-        public string? name { get; set; } 
-        public string? number { get; set; } 
-        public string? date { get; set; } 
-        public string? cvv { get; set; }
+        public int Id { get; set; }
 
-        [ForeignKey ("BookingId")]
+        public string name { get; set; } = string.Empty;
 
-        public Payment payment { get; set; }
+        public string number { get; set; } = string.Empty;
+
+        public string date { get; set; } = string.Empty;
+
+        public int cvv { get; set; } 
     }
 }
+
+
