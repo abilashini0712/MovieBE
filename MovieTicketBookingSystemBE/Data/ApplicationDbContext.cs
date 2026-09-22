@@ -22,6 +22,7 @@ namespace MovieTicketBookingSystemBE.Data
 
         public DbSet<Payment> Payments { get; set; }
 
+
       
     }
 }

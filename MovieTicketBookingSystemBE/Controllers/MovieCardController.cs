@@ -19,7 +19,7 @@ public class CardsController : ControllerBase
     }
 
    
-    [HttpGet]
+   /* [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetCards()
     {
         return await _context.Movies.ToListAsync();
@@ -75,5 +75,5 @@ public class CardsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
-    }
+    }*/
 }

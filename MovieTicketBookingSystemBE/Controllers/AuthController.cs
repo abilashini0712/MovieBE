@@ -1,24 +1,25 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc; // this give API conntrollers
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.Models;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    [ApiController] //automatically validate the models
+    [Route("api/[controller]")] //define the base url for the controller
+    public class AuthController : ControllerBase // (ControllerBase) provide fuctionality needed for the web Api
     {
         private readonly ApplicationDbContext _context;
 
-        public AuthController(ApplicationDbContext context)
+        public AuthController(ApplicationDbContext context) 
         {
             _context = context;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Register model)
+        public async Task<IActionResult> Register(Register model) 
+            // in here public method  access by the API framework , async nmethod aynchronus databae operation, & (Task<IActionResult>) method will eventually return an http response.
         {
             var existingUser = await _context.Registers
                 .FirstOrDefaultAsync(x => x.Email == model.Email);

@@ -7,6 +7,10 @@ namespace MovieTicketBookingSystemBE.Migrations
     /// <inheritdoc />
     public partial class Booking : Migration
     {
+        internal readonly int Tickets;
+
+        public string Seats { get; internal set; }
+
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {

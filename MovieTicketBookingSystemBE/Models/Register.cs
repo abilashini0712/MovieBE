@@ -5,7 +5,7 @@ namespace MovieTicketBookingSystemBE.Models
 {
     public class Register
     {
-        
+        [Key]
         public int Id { get; set; }
 
 
@@ -14,6 +14,10 @@ namespace MovieTicketBookingSystemBE.Models
         public string Email { get; set; } = string.Empty;
 
         public string Password { get; set; } = string.Empty;
+
+
+        //public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        
     }
 }
 

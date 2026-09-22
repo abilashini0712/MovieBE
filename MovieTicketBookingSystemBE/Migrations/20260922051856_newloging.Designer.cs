@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieTicketBookingSystemBE.Data;
 
@@ -11,9 +12,11 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260922051856_newloging")]
+    partial class newloging
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,6 +40,9 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("RegisterId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Seats")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -45,6 +51,8 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("id");
+
+                    b.HasIndex("RegisterId");
 
                     b.ToTable("Bookings");
                 });
@@ -157,6 +165,17 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.ToTable("Registers");
                 });
 
+            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Booking", b =>
+                {
+                    b.HasOne("MovieTicketBookingSystemBE.Models.Register", "Register")
+                        .WithMany("Bookings")
+                        .HasForeignKey("RegisterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Register");
+                });
+
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Login", b =>
                 {
                     b.HasOne("MovieTicketBookingSystemBE.Models.Register", "Register")
@@ -166,6 +185,11 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired();
 
                     b.Navigation("Register");
+                });
+
+            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Register", b =>
+                {
+                    b.Navigation("Bookings");
                 });
 #pragma warning restore 612, 618
         }
