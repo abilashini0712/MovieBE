@@ -1,30 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieTicketBookingSystemBE.Models
 {
-    public class Booking
+    public class Ticket
     {
         [Key]
-      public int Id { get; set; }
 
+        public int Id { get; set; }
         public DateTime Date { get; set; }
 
         public string Time { get; set; } = string.Empty;
 
         public string Cinemas { get; set; } = string.Empty;
 
-        public int Tickets { get; set; } 
-
         public string Seats { get; set; } = string.Empty;
 
- 
-       public int RegisterId { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-       public Register? Register { get; set; }
+       // public int BookingId { get; set; }
 
-        //public ICollection<Ticket> tickets { get; set; } = new List<Ticket>();
+      //  public Booking? Booking { get; set; }
+
+
     }
 }
-
-

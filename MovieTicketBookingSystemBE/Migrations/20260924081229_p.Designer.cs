@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieTicketBookingSystemBE.Data;
 
@@ -11,9 +12,11 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260924081229_p")]
+    partial class p
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,39 +168,6 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.ToTable("Registers");
                 });
 
-            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Ticket", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Cinemas")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Seats")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Time")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.ToTable("Tickets");
-                });
-
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Booking", b =>
                 {
                     b.HasOne("MovieTicketBookingSystemBE.Models.Register", "Register")
@@ -218,22 +188,6 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired();
 
                     b.Navigation("Register");
-                });
-
-            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Ticket", b =>
-                {
-                    b.HasOne("MovieTicketBookingSystemBE.Models.Booking", "Booking")
-                        .WithMany("tickets")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-                });
-
-            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Booking", b =>
-                {
-                    b.Navigation("tickets");
                 });
 
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Register", b =>

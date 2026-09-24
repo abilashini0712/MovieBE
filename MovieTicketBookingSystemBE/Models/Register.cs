@@ -16,7 +16,7 @@ namespace MovieTicketBookingSystemBE.Models
         public string Password { get; set; } = string.Empty;
 
 
-        //public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+        public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
         
     }
 }

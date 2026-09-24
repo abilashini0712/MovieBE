@@ -1,17 +1,13 @@
-﻿namespace MovieTicketBookingSystemBE.Models
+﻿namespace MovieTicketBookingSystemBE.DTO.PaymentDto
 {
-    public class Payment
+    public class MakePaymentDto
     {
-        public int Id { get; set; }
-
         public string name { get; set; } = string.Empty;
 
         public int number { get; set; } 
 
         public string date { get; set; } = string.Empty;
 
-        public int cvv { get; set; } 
+        public int cvv { get; set; }
     }
 }
-
-

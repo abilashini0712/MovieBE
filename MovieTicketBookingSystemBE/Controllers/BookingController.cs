@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using NuGet.Protocol.Core.Types;
 using MovieTicketBookingSystemBE.Models;
+using MovieTicketBookingSystemBE.DTO.BookingDto;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
@@ -17,11 +18,11 @@ namespace MovieTicketBookingSystemBE.Controllers
             _context = context;
         }
 
-        
+       
 
 
         [HttpPost]
-        public async Task<IActionResult> Booking(Booking booking)
+        public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
 
 
@@ -36,38 +37,34 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Please select at least one seat.");
             }
 
-            _context.Bookings.Add(booking);
+            var b = new Booking{
+                Seats = booking.Seats,
+                Time = booking.Time,
+                Cinemas = booking.Cinemas,
+                Date = booking.Date,
+                Tickets = booking.Tickets,
+                RegisterId = booking.RegisterId
+            };
+            _context.Bookings.Add(b);
 
             await _context.SaveChangesAsync();
 
-            return Ok(booking);
+            return Ok(b);
         }
 
 
-      /* [HttpGet]
-        public async Task<IActionResult> GetBookings()
+       [HttpGet("{id}")]
+        public async Task<ActionResult<Booking>> GetToBook(int id)
         {
-            var bookings = await _context.Bookings
-                .Include(b => b.Register)
-                .ToListAsync();
-
-            return Ok(bookings);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetBooking(int id)
-        {
-            var booking = await _context.Bookings
-                .Include(b => b.Register)
-                .FirstOrDefaultAsync(b => b.id == id);
+            var booking = await _context.Bookings.FindAsync(id);
 
             if (booking == null)
             {
-                return NotFound("Booking not found.");
+                return NotFound();
             }
 
-            return Ok(booking);
-        }*/
-      
+            return booking;
+        } 
+       
     }
 }
