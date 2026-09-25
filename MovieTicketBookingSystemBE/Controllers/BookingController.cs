@@ -18,15 +18,43 @@ namespace MovieTicketBookingSystemBE.Controllers
             _context = context;
         }
 
-       
 
+
+
+        /*   [HttpPost]
+           public async Task<IActionResult> Booking(CreateBookingDto booking)
+           {
+
+
+
+               if (booking.Tickets <= 0)
+               {
+                   return BadRequest("Number of tickets must be greater than 0.");
+               }
+
+               if (string.IsNullOrWhiteSpace(booking.Seats))
+               {
+                   return BadRequest("Please select at least one seat.");
+               }
+
+               var b = new Booking{
+                   Seats = booking.Seats,
+                   Time = booking.Time,
+                   Cinemas = booking.Cinemas,
+                   Date = booking.Date,
+                   Tickets = booking.Tickets,
+                   RegisterId = booking.RegisterId
+               };
+               _context.Bookings.Add(b);
+
+               await _context.SaveChangesAsync();
+
+               return Ok(b);
+           } */
 
         [HttpPost]
         public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
-
-
-
             if (booking.Tickets <= 0)
             {
                 return BadRequest("Number of tickets must be greater than 0.");
@@ -37,7 +65,21 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Please select at least one seat.");
             }
 
-            var b = new Booking{
+          
+            var registerExists = await _context.Registers
+                .AnyAsync(r => r.Id == booking.RegisterId);
+
+            Console.WriteLine($"RegisterId received: {booking.RegisterId}");
+            Console.WriteLine($"Register exists: {registerExists}");
+
+            if (!registerExists)
+            {
+                return BadRequest(
+                    $"RegisterId {booking.RegisterId} does not exist in Registers table.");
+            }
+
+            var b = new Booking
+            {
                 Seats = booking.Seats,
                 Time = booking.Time,
                 Cinemas = booking.Cinemas,
@@ -45,6 +87,7 @@ namespace MovieTicketBookingSystemBE.Controllers
                 Tickets = booking.Tickets,
                 RegisterId = booking.RegisterId
             };
+
             _context.Bookings.Add(b);
 
             await _context.SaveChangesAsync();
@@ -53,7 +96,7 @@ namespace MovieTicketBookingSystemBE.Controllers
         }
 
 
-       [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetToBook(int id)
         {
             var booking = await _context.Bookings.FindAsync(id);

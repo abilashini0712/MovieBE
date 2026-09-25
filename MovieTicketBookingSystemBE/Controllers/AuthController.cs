@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc; // this give API conntrollers
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.Models;
+using MovieTicketBookingSystemBE.DTO.LoginDto;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
@@ -40,7 +41,7 @@ namespace MovieTicketBookingSystemBE.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Login model)
+        public async Task<IActionResult> Login(LoginDto model)
         {
             var user = await _context.Registers
                 .FirstOrDefaultAsync(x =>
