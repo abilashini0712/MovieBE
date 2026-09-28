@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MovieTicketBookingSystemBE.Data;
 
@@ -11,9 +12,11 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260928050203_testTicket")]
+    partial class testTicket
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,9 +176,6 @@ namespace MovieTicketBookingSystemBE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Cinemas")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -192,8 +192,6 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
 
                     b.ToTable("Tickets");
                 });
@@ -218,17 +216,6 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired();
 
                     b.Navigation("Register");
-                });
-
-            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Ticket", b =>
-                {
-                    b.HasOne("MovieTicketBookingSystemBE.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Register", b =>

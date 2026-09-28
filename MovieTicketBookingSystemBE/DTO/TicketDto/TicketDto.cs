@@ -1,12 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MovieTicketBookingSystemBE.Models
+﻿namespace MovieTicketBookingSystemBE.DTO.TicketDto
 {
-    public class Ticket
+    public class TicketDto
     {
-        [Key]
-
-        public int Id { get; set; }
         public DateTime Date { get; set; }
 
         public string Time { get; set; } = string.Empty;
@@ -15,12 +10,6 @@ namespace MovieTicketBookingSystemBE.Models
 
         public string Seats { get; set; } = string.Empty;
 
-        //public string Title { get; set; } = string.Empty;
-
         public int BookingId { get; set; }
-
-       public Booking? Booking { get; set; }
-
-
     }
 }

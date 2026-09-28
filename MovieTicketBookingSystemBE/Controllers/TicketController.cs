@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
+using MovieTicketBookingSystemBE.DTO.TicketDto;
 using MovieTicketBookingSystemBE.Models;
 
 namespace MovieTicketBookingSystemBE.Controllers
@@ -16,15 +18,26 @@ namespace MovieTicketBookingSystemBE.Controllers
             _context = context;
         }
 
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<Ticket>> GetTicket(int Id)
+        [HttpGet("{BookingId}")]
+        public async Task<ActionResult<Ticket>> GetTicket(int BookingId)
         {
-            var ticket = await _context.Tickets.FindAsync(Id);
+            var ticket = await _context.Tickets.FindAsync(BookingId);
 
+
+         
             if (ticket == null)
             {
                 return NotFound();
             }
+
+            var tick = new TicketDto
+            {
+                Date = ticket.Date,
+                Time = ticket.Time,
+                Cinemas = ticket.Cinemas,
+                Seats = ticket.Seats,
+                BookingId =ticket.BookingId
+            };
 
             return ticket;
         }
