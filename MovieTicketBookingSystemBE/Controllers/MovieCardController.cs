@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
+using MovieTicketBookingSystemBE.DTO.BookingDto;
 using MovieTicketBookingSystemBE.Models;
+using MovieTicketBookingSystemBE.DTO.MovieDto;
 
 
 namespace MovieCardControllers;
@@ -18,8 +21,8 @@ public class CardsController : ControllerBase
         _context = context;
     }
 
-   
-   /* [HttpGet]
+
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetCards()
     {
         return await _context.Movies.ToListAsync();
@@ -64,7 +67,9 @@ public class CardsController : ControllerBase
         return NoContent();
     }
 
-  
+
+
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCard(int id)
     {
@@ -75,5 +80,7 @@ public class CardsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
-    }*/
+
+
+    }
 }

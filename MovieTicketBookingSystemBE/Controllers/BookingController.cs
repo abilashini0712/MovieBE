@@ -21,36 +21,7 @@ namespace MovieTicketBookingSystemBE.Controllers
 
 
 
-        /*   [HttpPost]
-           public async Task<IActionResult> Booking(CreateBookingDto booking)
-           {
-
-
-
-               if (booking.Tickets <= 0)
-               {
-                   return BadRequest("Number of tickets must be greater than 0.");
-               }
-
-               if (string.IsNullOrWhiteSpace(booking.Seats))
-               {
-                   return BadRequest("Please select at least one seat.");
-               }
-
-               var b = new Booking{
-                   Seats = booking.Seats,
-                   Time = booking.Time,
-                   Cinemas = booking.Cinemas,
-                   Date = booking.Date,
-                   Tickets = booking.Tickets,
-                   RegisterId = booking.RegisterId
-               };
-               _context.Bookings.Add(b);
-
-               await _context.SaveChangesAsync();
-
-               return Ok(b);
-           } */
+        
 
         [HttpPost]
         public async Task<IActionResult> Booking(CreateBookingDto booking)

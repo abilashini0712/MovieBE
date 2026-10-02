@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace MovieTicketBookingSystemBE.Migrations
 {
     /// <inheritdoc />
-    public partial class movies : Migration
+    public partial class fileupload : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +17,7 @@ namespace MovieTicketBookingSystemBE.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     gener = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     duration = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -25,13 +26,29 @@ namespace MovieTicketBookingSystemBE.Migrations
                 {
                     table.PrimaryKey("PK_Movies", x => x.id);
                 });
+
+            
+
+            
+
+              
+               
+                        
+          
+
+
+           
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            
+
             migrationBuilder.DropTable(
                 name: "Movies");
+
+           
         }
     }
 }
