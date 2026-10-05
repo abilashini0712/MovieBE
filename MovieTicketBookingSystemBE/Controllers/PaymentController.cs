@@ -33,7 +33,8 @@ namespace MovieTicketBookingSystemBE.Controllers
                 name = payment.name,
                 number = payment.number,
                 date = payment.date,
-                cvv = payment.cvv
+                cvv = payment.cvv,
+                BookingId = payment.BookingId
 
             };
             _context.Payments.Add(pay);

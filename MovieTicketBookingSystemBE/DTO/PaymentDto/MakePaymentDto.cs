@@ -9,5 +9,7 @@
         public string date { get; set; } = string.Empty;
 
         public int cvv { get; set; }
+
+        public int BookingId { get; set; }
     }
 }

@@ -120,6 +120,9 @@ namespace MovieTicketBookingSystemBE.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BookingId")
+                        .HasColumnType("int");
+
                     b.Property<int>("cvv")
                         .HasColumnType("int");
 
@@ -135,6 +138,8 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BookingId");
 
                     b.ToTable("Payments");
                 });
@@ -217,6 +222,17 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired();
 
                     b.Navigation("Register");
+                });
+
+            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Payment", b =>
+                {
+                    b.HasOne("MovieTicketBookingSystemBE.Models.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
                 });
 
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Ticket", b =>
