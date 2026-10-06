@@ -19,27 +19,26 @@ namespace MovieTicketBookingSystemBE.Controllers
         }
 
         [HttpGet("{BookingId}")]
-        public async Task<ActionResult<Ticket>> GetTicket(int BookingId)
+        public async Task<ActionResult<TicketDto>> GetTicket(int BookingId)
         {
-            var ticket = await _context.Tickets.FindAsync(BookingId);
+            var booking = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.Id == BookingId);
 
-
-         
-            if (ticket == null)
+            if (booking == null)
             {
                 return NotFound();
             }
 
-            var tick = new TicketDto
+            var ticket = new TicketDto
             {
-                Date = ticket.Date,
-                Time = ticket.Time,
-                Cinemas = ticket.Cinemas,
-                Seats = ticket.Seats,
-                BookingId =ticket.BookingId
+                Date = booking.Date,
+                Time = booking.Time,
+                Cinemas = booking.Cinemas,
+                Seats = booking.Seats,
+                BookingId = booking.Id
             };
 
-            return ticket;
+            return Ok(ticket);
         }
     }
 }

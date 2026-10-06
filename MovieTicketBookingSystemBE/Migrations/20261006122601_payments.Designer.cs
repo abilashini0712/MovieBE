@@ -12,8 +12,8 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261005102934_payment")]
-    partial class payment
+    [Migration("20261006122601_payments")]
+    partial class payments
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
