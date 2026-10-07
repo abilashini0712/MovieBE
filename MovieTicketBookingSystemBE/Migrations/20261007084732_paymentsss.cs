@@ -6,17 +6,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     /// <inheritdoc />
-    public partial class payments : Migration
+    public partial class paymentsss : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
-
            
-
-            
-               
+           
+           
 
            
 
@@ -43,9 +40,8 @@ namespace MovieTicketBookingSystemBE.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            
 
-          
+           
 
             
 
@@ -62,12 +58,10 @@ namespace MovieTicketBookingSystemBE.Migrations
         {
             
 
-            
-
             migrationBuilder.DropTable(
                 name: "Payments");
 
-            
+           
         }
     }
 }

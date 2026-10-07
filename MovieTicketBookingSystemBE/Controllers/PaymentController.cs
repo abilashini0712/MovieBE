@@ -19,7 +19,7 @@ namespace MovieTicketBookingSystemBE.Controllers
         [HttpPost]
         public async Task<IActionResult> Payment(MakePaymentDto payment)
         {
-            if (payment.number <= 0)
+            if (payment.number <=0)
             {
                 return BadRequest("Enter the number");
             }
