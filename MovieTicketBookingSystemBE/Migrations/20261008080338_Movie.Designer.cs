@@ -12,8 +12,8 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261007084732_paymentsss")]
-    partial class paymentsss
+    [Migration("20261008080338_Movie")]
+    partial class Movie
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -103,6 +103,10 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("gener")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("show")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

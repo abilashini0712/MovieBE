@@ -14,6 +14,8 @@ namespace MovieTicketBookingSystemBE.Models
 
         public string duration { get; set; } = string.Empty;
 
+        public string show { get; set; } = string.Empty;
+
        
     }
 }
