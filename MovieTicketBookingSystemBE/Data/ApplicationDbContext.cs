@@ -24,6 +24,7 @@ namespace MovieTicketBookingSystemBE.Data
 
         public DbSet<Ticket> Tickets { get; set; }
 
+        public DbSet<users> users { get; set; }
 
       
     }

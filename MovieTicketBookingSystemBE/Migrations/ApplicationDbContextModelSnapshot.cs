@@ -206,6 +206,28 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.ToTable("Tickets");
                 });
 
+            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.users", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordSalt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("users");
+                });
+
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Booking", b =>
                 {
                     b.HasOne("MovieTicketBookingSystemBE.Models.Register", "Register")
