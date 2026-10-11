@@ -12,8 +12,8 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261008080338_Movie")]
-    partial class Movie
+    [Migration("20261011131633_paymentTable")]
+    partial class paymentTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,8 +141,9 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("number")
-                        .HasColumnType("int");
+                    b.Property<string>("number")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

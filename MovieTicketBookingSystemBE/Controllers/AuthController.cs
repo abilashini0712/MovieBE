@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc; // this give API conntrollers
+﻿using Microsoft.AspNetCore.Identity;   
+using Microsoft.AspNetCore.Mvc; 
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.Models;
@@ -13,14 +13,21 @@ namespace MovieTicketBookingSystemBE.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public AuthController(ApplicationDbContext context) 
+        
+        private readonly IConfiguration _configuration;
+
+       
+        private readonly PasswordHasher<Register> _passwordHasher = new PasswordHasher<Register>();
+
+        public AuthController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Register model) 
-            // in here public method  access by the API framework , async nmethod aynchronus databae operation, & (Task<IActionResult>) method will eventually return an http response.
+        public async Task<IActionResult> Register(Register model)
+        // in here public method  access by the API framework , async nmethod aynchronus databae operation, & (Task<IActionResult>) method will eventually return an http response.
         {
             var existingUser = await _context.Registers
                 .FirstOrDefaultAsync(x => x.Email == model.Email);
@@ -30,6 +37,10 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Email already registered.");
             }
 
+            
+            model.Password = _passwordHasher.HashPassword(model, model.Password);
+
+           
             _context.Registers.Add(model);
 
             await _context.SaveChangesAsync();
@@ -43,10 +54,34 @@ namespace MovieTicketBookingSystemBE.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
-            var user = await _context.Registers
-                .FirstOrDefaultAsync(x =>
-                    (x.Email == model.UserName || x.Name == model.UserName)
-                    && x.Password == model.Password);
+            
+            var adminEmail = _configuration["AdminSettings:Email"];
+            var adminPassword = _configuration["AdminSettings:Password"];
+
+            if (!string.IsNullOrEmpty(adminEmail)
+                && !string.IsNullOrEmpty(adminPassword)
+                && model.UserName == adminEmail
+                && model.Password == adminPassword)
+            {
+                return Ok(new
+                {
+                    message = "Login successful",
+                    userId = 0,            
+                    name = "Admin",
+                    email = adminEmail,
+                    isAdmin = true         
+                });
+            }
+
+            
+            var matchingUsers = await _context.Registers
+                .Where(x => x.Email == model.UserName || x.Name == model.UserName)
+                .ToListAsync();
+
+             
+            var user = matchingUsers.FirstOrDefault(x =>
+                _passwordHasher.VerifyHashedPassword(x, x.Password, model.Password)
+                != PasswordVerificationResult.Failed);
 
             if (user == null)
             {
@@ -61,10 +96,11 @@ namespace MovieTicketBookingSystemBE.Controllers
                 message = "Login successful",
                 userId = user.Id,
                 name = user.Name,
-                email = user.Email
+                email = user.Email,
+                isAdmin = false
             });
         }
     }
 
 
-    }
+}

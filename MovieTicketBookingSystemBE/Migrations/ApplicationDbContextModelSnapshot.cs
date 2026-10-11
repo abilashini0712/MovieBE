@@ -138,8 +138,9 @@ namespace MovieTicketBookingSystemBE.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("number")
-                        .HasColumnType("int");
+                    b.Property<string>("number")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

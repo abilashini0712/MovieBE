@@ -19,9 +19,9 @@ namespace MovieTicketBookingSystemBE.Controllers
         [HttpPost]
         public async Task<IActionResult> Payment(MakePaymentDto payment)
         {
-            if (payment.number <=0)
+            if (string.IsNullOrWhiteSpace(payment.number) || !payment.number.All(char.IsDigit))
             {
-                return BadRequest("Enter the number");
+                return BadRequest("Enter a valid card number");
             }
             if (string.IsNullOrWhiteSpace(payment.name))
             {

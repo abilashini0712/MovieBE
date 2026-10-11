@@ -4,7 +4,7 @@
     {
         public string name { get; set; } = string.Empty;
 
-        public int number { get; set; } 
+        public string number { get; set; } = string.Empty;
 
         public string date { get; set; } = string.Empty;
 
