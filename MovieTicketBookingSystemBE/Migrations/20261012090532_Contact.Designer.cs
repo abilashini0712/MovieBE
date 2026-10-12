@@ -12,8 +12,8 @@ using MovieTicketBookingSystemBE.Data;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261011131633_paymentTable")]
-    partial class paymentTable
+    [Migration("20261012090532_Contact")]
+    partial class Contact
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,46 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.HasIndex("RegisterId");
 
                     b.ToTable("Bookings");
+                });
+
+            modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Contact", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("nvarchar(254)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("MovieTicketBookingSystemBE.Models.Login", b =>

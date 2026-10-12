@@ -6,18 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     /// <inheritdoc />
-    public partial class paymentTable : Migration
+    public partial class PaymentTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            
-
            
+          
 
-           
-
-            
+          
 
             migrationBuilder.CreateTable(
                 name: "Payments",
@@ -42,29 +39,27 @@ namespace MovieTicketBookingSystemBE.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-           
+          
 
            
-
-         
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_BookingId",
                 table: "Payments",
                 column: "BookingId");
 
-            
+           
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            
+           
 
             migrationBuilder.DropTable(
                 name: "Payments");
 
-           
+            
         }
     }
 }
