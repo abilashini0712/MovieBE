@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     /// <inheritdoc />
-    public partial class Contact : Migration
+    public partial class contacts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,22 @@ namespace MovieTicketBookingSystemBE.Migrations
                 {
                     table.PrimaryKey("PK_Contacts", x => x.Id);
                 });
+
+           
+
+           
+
+            
+
+            
+
+           
+
+          
+
+            
+
+           
         }
 
         /// <inheritdoc />
@@ -35,6 +51,8 @@ namespace MovieTicketBookingSystemBE.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Contacts");
+
+           
         }
     }
 }
