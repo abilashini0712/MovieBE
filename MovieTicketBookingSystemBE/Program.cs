@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
+using MovieTicketBookingSystemBE.Services;
 //using static MovieTicketBookingSystemBE.Data
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<EmailSetting>(
+    builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 
