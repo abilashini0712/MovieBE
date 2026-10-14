@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;   
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;   
 using Microsoft.AspNetCore.Mvc; 
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
-using MovieTicketBookingSystemBE.Models;
 using MovieTicketBookingSystemBE.DTO.LoginDto;
+using MovieTicketBookingSystemBE.Models;
+using MovieTicketBookingSystemBE.Services;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
@@ -12,19 +14,21 @@ namespace MovieTicketBookingSystemBE.Controllers
     public class AuthController : ControllerBase // (ControllerBase) provide fuctionality needed for the web Api
     {
         private readonly ApplicationDbContext _context;
-
+        //private readonly JwtService _jwtService;
         
         private readonly IConfiguration _configuration;
 
        
         private readonly PasswordHasher<Register> _passwordHasher = new PasswordHasher<Register>();
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration)
+        public AuthController(ApplicationDbContext context, IConfiguration configuration )
         {
             _context = context;
             _configuration = configuration;
-        }
+            //_jwtService = jwtService;
 
+        }
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register(Register model)
         // in here public method  access by the API framework , async nmethod aynchronus databae operation, & (Task<IActionResult>) method will eventually return an http response.
@@ -50,7 +54,7 @@ namespace MovieTicketBookingSystemBE.Controllers
                 message = "Registration successful"
             });
         }
-
+        
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
@@ -91,6 +95,7 @@ namespace MovieTicketBookingSystemBE.Controllers
                 });
             }
 
+            //_jwtService.GenerateToken(user.Email, user.role)
             return Ok(new
             {
                 message = "Login successful",

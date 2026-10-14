@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Construction;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.DTO.BookingDto;
-using MovieTicketBookingSystemBE.Models;
 using MovieTicketBookingSystemBE.DTO.MovieDto;
+using MovieTicketBookingSystemBE.Models;
 
 
 namespace MovieCardControllers;
@@ -21,14 +22,14 @@ public class CardsController : ControllerBase
         _context = context;
     }
 
-
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Movie>>> GetCards()
     {
         return await _context.Movies.ToListAsync();
     }
 
-
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<Movie>> GetCard(int id)
     {
@@ -37,7 +38,7 @@ public class CardsController : ControllerBase
         return card;
     }
 
-
+    
     [HttpPost]
     public async Task<ActionResult<Movie>> CreateCard(Movie card)
     {
@@ -46,7 +47,7 @@ public class CardsController : ControllerBase
 
         return CreatedAtAction(nameof(GetCard), new { id = card.id }, card);
     }
-
+    
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateCard(int id, Movie card)
     {
@@ -69,7 +70,7 @@ public class CardsController : ControllerBase
 
 
 
-
+    
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteCard(int id)
     {

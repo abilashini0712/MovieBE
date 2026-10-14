@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.Models;
@@ -24,6 +25,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             _logger = logger;
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Contact contact)
         {
@@ -52,6 +54,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(new { message = "Contact message saved successfully." });
         }
 
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

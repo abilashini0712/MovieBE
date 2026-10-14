@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.DTO.BookingDto;
 using MovieTicketBookingSystemBE.DTO.PaymentDto;
@@ -16,6 +17,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             _context = context;
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> Payment(MakePaymentDto payment)
         {
@@ -44,7 +46,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(pay);
 
         }
-
+        
         [HttpGet("{Id}")]
         public async Task<ActionResult<Payment>> GetTopay(int Id)
         {

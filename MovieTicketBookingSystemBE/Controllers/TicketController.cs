@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.DTO.TicketDto;
@@ -17,7 +18,7 @@ namespace MovieTicketBookingSystemBE.Controllers
         {
             _context = context;
         }
-
+        
         [HttpGet("{BookingId}")]
         public async Task<ActionResult<TicketDto>> GetTicket(int BookingId)
         {

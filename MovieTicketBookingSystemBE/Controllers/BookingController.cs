@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
-using NuGet.Protocol.Core.Types;
-using MovieTicketBookingSystemBE.Models;
 using MovieTicketBookingSystemBE.DTO.BookingDto;
+using MovieTicketBookingSystemBE.Models;
+using NuGet.Protocol.Core.Types;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
@@ -21,8 +22,8 @@ namespace MovieTicketBookingSystemBE.Controllers
 
 
 
-        
 
+        
         [HttpPost]
         public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
@@ -66,7 +67,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(b);
         }
 
-
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetToBook(int id)
         {
