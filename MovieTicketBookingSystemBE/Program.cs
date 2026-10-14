@@ -26,8 +26,8 @@ builder.Services.Configure<EmailSetting>(
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-//// JWT service
-//builder.Services.AddScoped<JwtService>();
+////// JWT service
+////builder.Services.AddScoped<JwtService>();
 
 //// JWT settings
 //var jwtSettings =
