@@ -7,7 +7,7 @@ using MovieTicketBookingSystemBE.Models;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TicketController :ControllerBase
@@ -18,7 +18,8 @@ namespace MovieTicketBookingSystemBE.Controllers
         {
             _context = context;
         }
-        
+
+        //[AllowAnonymous]
         [HttpGet("{BookingId}")]
         public async Task<ActionResult<TicketDto>> GetTicket(int BookingId)
         {

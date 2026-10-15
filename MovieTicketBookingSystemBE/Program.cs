@@ -26,57 +26,42 @@ builder.Services.Configure<EmailSetting>(
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-////// JWT service
-////builder.Services.AddScoped<JwtService>();
+// Register the JWT service
+builder.Services.AddScoped<JwtService>();
 
-//// JWT settings
-//var jwtSettings =
-//    builder.Configuration.GetSection("JwtSettings");
+// Configure JWT authentication
+var jwtSettings =
+    builder.Configuration.GetSection("JwtSettings");
 
-//var jwtKey = jwtSettings["Key"]
-//    ?? throw new InvalidOperationException(
-//        "JWT Key is missing from configuration.");
+var secretKey = jwtSettings["SecretKey"]
+    ?? throw new InvalidOperationException(
+        "JWT SecretKey is missing.");
 
-//builder.Services
-//    .AddAuthentication(options =>
-//    {
-//        options.DefaultAuthenticateScheme =
-//            JwtBearerDefaults.AuthenticationScheme;
+builder.Services
+    .AddAuthentication(
+        JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings["Issuer"],
 
-//        options.DefaultChallengeScheme =
-//            JwtBearerDefaults.AuthenticationScheme;
-//    })
-//    .AddJwtBearer(options =>
-//    {
-//        options.TokenValidationParameters =
-//            new TokenValidationParameters
-//            {
-//                ValidateIssuer = true,
-//                ValidIssuer = jwtSettings["Issuer"],
+                ValidateAudience = true,
+                ValidAudience = jwtSettings["Audience"],
 
-//                ValidateAudience = true,
-//                ValidAudience = jwtSettings["Audience"],
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(secretKey)),
 
-//                ValidateIssuerSigningKey = true,
-//                IssuerSigningKey = new SymmetricSecurityKey(
-//                    Encoding.UTF8.GetBytes(jwtKey)),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+    });
 
-//                ValidateLifetime = true,
-//                ClockSkew = TimeSpan.FromMinutes(1),
-
-//                RoleClaimType = ClaimTypes.Role,
-//                NameClaimType = ClaimTypes.NameIdentifier
-//            };
-//    });
-
-//// Require authentication for all endpoints by default
-//builder.Services.AddAuthorization(options =>
-//{
-//    options.FallbackPolicy =
-//        new AuthorizationPolicyBuilder()
-//            .RequireAuthenticatedUser()
-//            .Build();
-//});
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

@@ -7,6 +7,7 @@ using MovieTicketBookingSystemBE.Models;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PaymentController : ControllerBase
@@ -17,7 +18,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             _context = context;
         }
 
-        
+       // [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Payment(MakePaymentDto payment)
         {
@@ -46,7 +47,8 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(pay);
 
         }
-        
+
+     //  [AllowAnonymous]
         [HttpGet("{Id}")]
         public async Task<ActionResult<Payment>> GetTopay(int Id)
         {

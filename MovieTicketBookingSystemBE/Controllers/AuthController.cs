@@ -9,25 +9,30 @@ using MovieTicketBookingSystemBE.Services;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
+    //[Authorize]
     [ApiController] //automatically validate the models
     [Route("api/[controller]")] //define the base url for the controller
     public class AuthController : ControllerBase // (ControllerBase) provide fuctionality needed for the web Api
     {
         private readonly ApplicationDbContext _context;
-        //private readonly JwtService _jwtService;
+       
         
         private readonly IConfiguration _configuration;
 
+        private readonly JwtService _jwtService;
        
         private readonly PasswordHasher<Register> _passwordHasher = new PasswordHasher<Register>();
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration )
+        public AuthController(ApplicationDbContext context, IConfiguration configuration, JwtService jwtService )
         {
             _context = context;
             _configuration = configuration;
-            //_jwtService = jwtService;
+            _jwtService = jwtService;
+            
 
         }
+
+        //[AllowAnonymous]
         
         [HttpPost("register")]
         public async Task<IActionResult> Register(Register model)
@@ -54,7 +59,8 @@ namespace MovieTicketBookingSystemBE.Controllers
                 message = "Registration successful"
             });
         }
-        
+
+        //[AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
@@ -67,13 +73,19 @@ namespace MovieTicketBookingSystemBE.Controllers
                 && model.UserName == adminEmail
                 && model.Password == adminPassword)
             {
+                var adminToken = _jwtService.GenerateToken(
+                     adminEmail,
+                     "Admin",
+                     "0");
+
                 return Ok(new
                 {
                     message = "Login successful",
-                    userId = 0,            
+                    token = adminToken,
+                    userId = 0,
                     name = "Admin",
                     email = adminEmail,
-                    isAdmin = true         
+                    isAdmin = true
                 });
             }
 
@@ -95,10 +107,16 @@ namespace MovieTicketBookingSystemBE.Controllers
                 });
             }
 
-            //_jwtService.GenerateToken(user.Email, user.role)
+
+            var token = _jwtService.GenerateToken(
+                         user.Email,
+                         "User",
+                         user.Id.ToString());
+
             return Ok(new
             {
                 message = "Login successful",
+                token = token,
                 userId = user.Id,
                 name = user.Name,
                 email = user.Email,

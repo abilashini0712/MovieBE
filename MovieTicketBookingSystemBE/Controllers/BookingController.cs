@@ -8,6 +8,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BookingController : ControllerBase
@@ -23,7 +24,7 @@ namespace MovieTicketBookingSystemBE.Controllers
 
 
 
-        
+      //  [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
@@ -67,7 +68,7 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(b);
         }
 
-        
+        //[AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetToBook(int id)
         {

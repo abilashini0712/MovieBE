@@ -11,6 +11,7 @@ using MovieTicketBookingSystemBE.Models;
 
 namespace MovieCardControllers;
 
+
 [ApiController]
 [Route("api/[controller]")]
 public class CardsController : ControllerBase

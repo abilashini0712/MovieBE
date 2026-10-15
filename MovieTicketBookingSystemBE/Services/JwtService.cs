@@ -1,5 +1,4 @@
-﻿
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -20,28 +19,28 @@ namespace MovieTicketBookingSystemBE.Services
             string role,
             string userId)
         {
-            var settings =
+            var jwtSettings =
                 _configuration.GetSection("JwtSettings");
 
-            var key = settings["Key"]
+            var secretKey = jwtSettings["SecretKey"]
                 ?? throw new InvalidOperationException(
-                    "JWT Key is missing.");
+                    "JWT SecretKey is missing.");
 
-            var issuer = settings["Issuer"];
-            var audience = settings["Audience"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, userId),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role)
             };
 
-            var securityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(key));
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(secretKey));
 
             var credentials = new SigningCredentials(
-                securityKey,
+                key,
                 SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -49,8 +48,8 @@ namespace MovieTicketBookingSystemBE.Services
                 audience: audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(
-                    Convert.ToDouble(
-                        settings["ExpiryMinutes"] ?? "60")),
+                    double.Parse(
+                        jwtSettings["ExpiryMinutes"] ?? "60")),
                 signingCredentials: credentials
             );
 
