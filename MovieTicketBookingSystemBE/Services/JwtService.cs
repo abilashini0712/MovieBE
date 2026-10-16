@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -29,11 +30,22 @@ namespace MovieTicketBookingSystemBE.Services
             var issuer = jwtSettings["Issuer"];
             var audience = jwtSettings["Audience"];
 
+            var expiryMinutes = double.Parse(
+                jwtSettings["ExpiryMinutes"] ?? "60");
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim(ClaimTypes.Email, email),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(
+                    ClaimTypes.NameIdentifier,
+                    userId),
+
+                new Claim(
+                    ClaimTypes.Email,
+                    email),
+
+                new Claim(
+                    ClaimTypes.Role,
+                    role)
             };
 
             var key = new SymmetricSecurityKey(
@@ -48,8 +60,7 @@ namespace MovieTicketBookingSystemBE.Services
                 audience: audience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(
-                    double.Parse(
-                        jwtSettings["ExpiryMinutes"] ?? "60")),
+                    expiryMinutes),
                 signingCredentials: credentials
             );
 

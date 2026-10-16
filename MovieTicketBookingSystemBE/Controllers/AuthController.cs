@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;   
-using Microsoft.AspNetCore.Mvc; 
+﻿
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
 using MovieTicketBookingSystemBE.DTO.LoginDto;
@@ -9,47 +10,65 @@ using MovieTicketBookingSystemBE.Services;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-    //[Authorize]
-    [ApiController] //automatically validate the models
-    [Route("api/[controller]")] //define the base url for the controller
-    public class AuthController : ControllerBase // (ControllerBase) provide fuctionality needed for the web Api
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-       
-        
         private readonly IConfiguration _configuration;
-
         private readonly JwtService _jwtService;
-       
-        private readonly PasswordHasher<Register> _passwordHasher = new PasswordHasher<Register>();
 
-        public AuthController(ApplicationDbContext context, IConfiguration configuration, JwtService jwtService )
+        private readonly PasswordHasher<Register>
+            _passwordHasher = new PasswordHasher<Register>();
+
+        public AuthController(
+            ApplicationDbContext context,
+            IConfiguration configuration,
+            JwtService jwtService)
         {
             _context = context;
             _configuration = configuration;
             _jwtService = jwtService;
-            
-
         }
 
-        //[AllowAnonymous]
-        
+       
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Register model)
-        // in here public method  access by the API framework , async nmethod aynchronus databae operation, & (Task<IActionResult>) method will eventually return an http response.
+        public async Task<IActionResult> Register(
+            [FromBody] Register model)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Name) ||
+                string.IsNullOrWhiteSpace(model.Email) ||
+                string.IsNullOrWhiteSpace(model.Password))
+            {
+                return BadRequest(
+                    "Name, email, and password are required.");
+            }
+
+            var email = model.Email.Trim();
+
             var existingUser = await _context.Registers
-                .FirstOrDefaultAsync(x => x.Email == model.Email);
+                .FirstOrDefaultAsync(
+                    x => x.Email == email);
 
             if (existingUser != null)
             {
-                return BadRequest("Email already registered.");
+                return BadRequest(
+                    "Email already registered.");
             }
 
-            
-            model.Password = _passwordHasher.HashPassword(model, model.Password);
+            model.Name = model.Name.Trim();
+            model.Email = email;
 
-           
+            model.Password = _passwordHasher.HashPassword(
+                model,
+                model.Password);
+
             _context.Registers.Add(model);
 
             await _context.SaveChangesAsync();
@@ -60,23 +79,40 @@ namespace MovieTicketBookingSystemBE.Controllers
             });
         }
 
-        //[AllowAnonymous]
+        
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDto model)
+        public async Task<IActionResult> Login(
+            [FromBody] LoginDto model)
         {
-            
-            var adminEmail = _configuration["AdminSettings:Email"];
-            var adminPassword = _configuration["AdminSettings:Password"];
+            if (string.IsNullOrWhiteSpace(model.UserName) ||
+                string.IsNullOrWhiteSpace(model.Password))
+            {
+                return BadRequest(
+                    "Username/email and password are required.");
+            }
 
-            if (!string.IsNullOrEmpty(adminEmail)
-                && !string.IsNullOrEmpty(adminPassword)
-                && model.UserName == adminEmail
-                && model.Password == adminPassword)
+            var userName = model.UserName.Trim();
+
+            
+            var adminEmail =
+                _configuration["AdminSettings:Email"];
+
+            var adminPassword =
+                _configuration["AdminSettings:Password"];
+
+            if (!string.IsNullOrWhiteSpace(adminEmail) &&
+                !string.IsNullOrEmpty(adminPassword) &&
+                string.Equals(
+                    userName,
+                    adminEmail,
+                    StringComparison.OrdinalIgnoreCase) &&
+                model.Password == adminPassword)
             {
                 var adminToken = _jwtService.GenerateToken(
-                     adminEmail,
-                     "Admin",
-                     "0");
+                    adminEmail,
+                    "Admin",
+                    "0");
 
                 return Ok(new
                 {
@@ -89,29 +125,33 @@ namespace MovieTicketBookingSystemBE.Controllers
                 });
             }
 
-            
+           
             var matchingUsers = await _context.Registers
-                .Where(x => x.Email == model.UserName || x.Name == model.UserName)
+                .Where(x =>
+                    x.Email == userName ||
+                    x.Name == userName)
                 .ToListAsync();
 
-             
             var user = matchingUsers.FirstOrDefault(x =>
-                _passwordHasher.VerifyHashedPassword(x, x.Password, model.Password)
+                _passwordHasher.VerifyHashedPassword(
+                    x,
+                    x.Password,
+                    model.Password)
                 != PasswordVerificationResult.Failed);
 
             if (user == null)
             {
                 return Unauthorized(new
                 {
-                    message = "Invalid username/email or password"
+                    message =
+                        "Invalid username/email or password"
                 });
             }
 
-
             var token = _jwtService.GenerateToken(
-                         user.Email,
-                         "User",
-                         user.Id.ToString());
+                user.Email,
+                "User",
+                user.Id.ToString());
 
             return Ok(new
             {
@@ -124,6 +164,4 @@ namespace MovieTicketBookingSystemBE.Controllers
             });
         }
     }
-
-
 }

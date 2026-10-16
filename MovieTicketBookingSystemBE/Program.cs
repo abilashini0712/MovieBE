@@ -26,10 +26,6 @@ builder.Services.Configure<EmailSetting>(
 
 builder.Services.AddScoped<IEmailService, EmailService>();
 
-// Register the JWT service
-builder.Services.AddScoped<JwtService>();
-
-// Configure JWT authentication
 var jwtSettings =
     builder.Configuration.GetSection("JwtSettings");
 
@@ -51,17 +47,26 @@ builder.Services
                 ValidateAudience = true,
                 ValidAudience = jwtSettings["Audience"],
 
+                ValidateLifetime = true,
+
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey =
                     new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(secretKey)),
 
-                ValidateLifetime = true,
+                RoleClaimType = ClaimTypes.Role,
+                NameClaimType = ClaimTypes.NameIdentifier,
+
                 ClockSkew = TimeSpan.Zero
             };
     });
 
 builder.Services.AddAuthorization();
+
+// Register JwtService if it is not already registered.
+builder.Services.AddScoped<
+    MovieTicketBookingSystemBE.Services.JwtService>();
+
 
 var app = builder.Build();
 
