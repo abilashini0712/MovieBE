@@ -8,7 +8,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-    
+
     [ApiController]
     [Route("api/[controller]")]
     public class BookingController : ControllerBase
@@ -25,6 +25,7 @@ namespace MovieTicketBookingSystemBE.Controllers
 
 
         [HttpPost]
+
         public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
             if (booking.Tickets <= 0)
@@ -37,12 +38,13 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Please select at least one seat.");
             }
 
-          
+
             var registerExists = await _context.Registers
                 .AnyAsync(r => r.Id == booking.RegisterId);
 
             Console.WriteLine($"RegisterId received: {booking.RegisterId}");
             Console.WriteLine($"Register exists: {registerExists}");
+            Console.WriteLine($"Date received by API: {booking.Date:yyyy-MM-dd}"); //this code newly added for testing the booking date
 
             if (!registerExists)
             {
@@ -62,12 +64,21 @@ namespace MovieTicketBookingSystemBE.Controllers
 
             _context.Bookings.Add(b);
 
+            Console.WriteLine($"Date before save: {b.Date:yyyy-MM-dd}");
+
+
             await _context.SaveChangesAsync();
+
+            var savedBooking = await _context.Bookings
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == b.Id);
+
+            Console.WriteLine($"Date read from database: {savedBooking?.Date:yyyy-MM-dd}");
 
             return Ok(b);
         }
 
-        
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Booking>> GetToBook(int id)
         {
