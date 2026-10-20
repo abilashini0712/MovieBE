@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
-using MovieTicketBookingSystemBE.DTO.BookingDto;
-using MovieTicketBookingSystemBE.Models;
 using NuGet.Protocol.Core.Types;
+using MovieTicketBookingSystemBE.Models;
+using MovieTicketBookingSystemBE.DTO.BookingDto;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-
     [ApiController]
     [Route("api/[controller]")]
     public class BookingController : ControllerBase
@@ -24,8 +22,8 @@ namespace MovieTicketBookingSystemBE.Controllers
 
 
 
-        [HttpPost]
 
+        [HttpPost]
         public async Task<IActionResult> Booking(CreateBookingDto booking)
         {
             if (booking.Tickets <= 0)
@@ -44,7 +42,6 @@ namespace MovieTicketBookingSystemBE.Controllers
 
             Console.WriteLine($"RegisterId received: {booking.RegisterId}");
             Console.WriteLine($"Register exists: {registerExists}");
-            Console.WriteLine($"Date received by API: {booking.Date:yyyy-MM-dd}"); //this code newly added for testing the booking date
 
             if (!registerExists)
             {
@@ -64,16 +61,7 @@ namespace MovieTicketBookingSystemBE.Controllers
 
             _context.Bookings.Add(b);
 
-            Console.WriteLine($"Date before save: {b.Date:yyyy-MM-dd}");
-
-
             await _context.SaveChangesAsync();
-
-            var savedBooking = await _context.Bookings
-                .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == b.Id);
-
-            Console.WriteLine($"Date read from database: {savedBooking?.Date:yyyy-MM-dd}");
 
             return Ok(b);
         }
@@ -90,14 +78,6 @@ namespace MovieTicketBookingSystemBE.Controllers
             }
 
             return booking;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
-        {
-            var bookings = await _context.Bookings.ToListAsync();
-
-            return Ok(bookings);
         }
 
     }
