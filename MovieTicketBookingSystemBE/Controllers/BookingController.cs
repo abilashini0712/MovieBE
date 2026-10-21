@@ -80,5 +80,13 @@ namespace MovieTicketBookingSystemBE.Controllers
             return booking;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Booking>>> GetBookings()
+        {
+            var bookings = await _context.Bookings.ToListAsync();
+
+            return Ok(bookings);
+        }
+
     }
 }

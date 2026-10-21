@@ -9,14 +9,21 @@ namespace MovieTicketBookingSystemBE.Models
 
         public string name { get; set; } = string.Empty;
 
-        public string number { get; set; } = string.Empty;
-
-        public string date { get; set; } = string.Empty;
-
-        public int cvv { get; set; }
-
         public int BookingId { get; set; }
 
         public Booking? Booking { get; set; }
+
+        public string StripeSessionId { get; set; }
+            = string.Empty;
+
+        public string Status { get; set; } = "Pending";
+
+        
+        public long Amount { get; set; }
+
+        public string Currency { get; set; } = "usd";
+
+        public DateTime CreatedAt { get; set; }
+            = DateTime.UtcNow;
     }
 }

@@ -1,66 +1,157 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MovieTicketBookingSystemBE.Data;
-using MovieTicketBookingSystemBE.DTO.BookingDto;
 using MovieTicketBookingSystemBE.DTO.PaymentDto;
 using MovieTicketBookingSystemBE.Models;
+using Stripe;
+using Stripe.Checkout;
 
 namespace MovieTicketBookingSystemBE.Controllers
 {
-    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
+    
     public class PaymentController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public PaymentController(ApplicationDbContext context)
+        private readonly IConfiguration _configuration;
+
+        public PaymentController(
+            ApplicationDbContext context,
+            IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-       // [AllowAnonymous]
-        [HttpPost]
-        public async Task<IActionResult> Payment(MakePaymentDto payment)
+        [HttpPost("create-checkout-session")]
+        public async Task<IActionResult> CreateCheckoutSession(
+            CreateStripeCheckoutDto dto)
         {
-            if (string.IsNullOrWhiteSpace(payment.number) || !payment.number.All(char.IsDigit))
+            var booking = await _context.Bookings
+                .FirstOrDefaultAsync(b => b.Id == dto.BookingId);
+
+            if (booking == null)
+                return NotFound("Booking not found.");
+
+            if (booking.Tickets <= 0)
+                return BadRequest("Invalid ticket quantity.");
+
+            var priceText = _configuration[
+                "TicketPricing:PricePerTicketMinorUnits"];
+
+            if (!long.TryParse(priceText, out long pricePerTicket)
+                || pricePerTicket <= 0)
             {
-                return BadRequest("Enter a valid card number");
-            }
-            if (string.IsNullOrWhiteSpace(payment.name))
-            {
-                return BadRequest("Enter the name");
+                return StatusCode(500,
+                    "Ticket pricing is not configured.");
             }
 
-            var pay = new Payment
-            {
-                name = payment.name,
-                number = payment.number,
-                date = payment.date,
-                cvv = payment.cvv,
-                BookingId = payment.BookingId
+            var currency = _configuration[
+                "TicketPricing:Currency"] ?? "usd";
 
+            long totalAmount;
+
+            try
+            {
+                totalAmount = checked(
+                    pricePerTicket * booking.Tickets);
+            }
+            catch (OverflowException)
+            {
+                return BadRequest("Invalid payment amount.");
+            }
+
+            var secretKey = _configuration["Stripe:SecretKey"];
+
+            if (string.IsNullOrWhiteSpace(secretKey))
+                return StatusCode(500,
+                    "Stripe is not configured.");
+
+            StripeConfiguration.ApiKey = secretKey;
+
+            var payment = new Payment
+            {
+                BookingId = booking.Id,
+                Amount = totalAmount,
+                Currency = currency,
+                Status = "Pending"
             };
-            _context.Payments.Add(pay);
 
+            _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
 
-            return Ok(pay);
+            var options = new SessionCreateOptions
+            {
+                Mode = "payment",
 
+                SuccessUrl =
+                    "https://localhost:7122/paymentResult"
+                    + "?session_id={CHECKOUT_SESSION_ID}",
+
+                CancelUrl =
+                    $"https://localhost:7122/payment/{booking.Id}",
+
+                ClientReferenceId = booking.Id.ToString(),
+
+                Metadata = new Dictionary<string, string>
+                {
+                    ["PaymentId"] = payment.Id.ToString(),
+                    ["BookingId"] = booking.Id.ToString()
+                },
+
+                LineItems = new List<SessionLineItemOptions>
+                {
+                    new SessionLineItemOptions
+                    {
+                        Quantity = booking.Tickets,
+
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            Currency = currency,
+
+                            UnitAmount = pricePerTicket,
+
+                            ProductData =
+                                new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Name = "Movie Ticket"
+                                }
+                        }
+                    }
+                }
+            };
+
+            var service = new SessionService();
+            var session = await service.CreateAsync(options);
+
+            payment.StripeSessionId = session.Id;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                checkoutUrl = session.Url
+            });
         }
 
-     //  [AllowAnonymous]
-        [HttpGet("{Id}")]
-        public async Task<ActionResult<Payment>> GetTopay(int Id)
+        [HttpGet("status/{sessionId}")]
+        public async Task<IActionResult> GetPaymentStatus(string sessionId)
         {
-            var payment = await _context.Payments.FindAsync(Id);
+            var payment = await _context.Payments
+                .FirstOrDefaultAsync(p => p.StripeSessionId == sessionId);
 
             if (payment == null)
             {
-                return NotFound();
+                return NotFound("Payment not found.");
             }
 
-            return payment;
+            return Ok(new
+            {
+                status = payment.Status,
+                bookingId = payment.BookingId
+            });
         }
-
     }
 }
