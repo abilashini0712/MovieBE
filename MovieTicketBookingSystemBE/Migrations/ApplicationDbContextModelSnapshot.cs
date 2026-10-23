@@ -37,6 +37,10 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("MovieName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RegisterId")
                         .HasColumnType("int");
 

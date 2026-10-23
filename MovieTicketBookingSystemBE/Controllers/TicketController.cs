@@ -33,6 +33,7 @@ namespace MovieTicketBookingSystemBE.Controllers
 
             var ticket = new TicketDto
             {
+                MovieName = booking.MovieName,
                 Date = booking.Date,
                 Time = booking.Time,
                 Cinemas = booking.Cinemas,

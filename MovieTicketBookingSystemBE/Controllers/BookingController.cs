@@ -49,19 +49,33 @@ namespace MovieTicketBookingSystemBE.Controllers
                     $"RegisterId {booking.RegisterId} does not exist in Registers table.");
             }
 
+          
+
+                  Console.WriteLine(
+            $"API received date: {booking.Date:yyyy-MM-dd}");
+
             var b = new Booking
             {
                 Seats = booking.Seats,
                 Time = booking.Time,
                 Cinemas = booking.Cinemas,
-                Date = booking.Date,
+                Date = booking.Date.Date,
                 Tickets = booking.Tickets,
-                RegisterId = booking.RegisterId
+                RegisterId = booking.RegisterId,
+                MovieName = booking.MovieName
             };
+
+           
+            Console.WriteLine($"Date received by API: {booking.Date:yyyy-MM-dd}");
+            Console.WriteLine($"Date assigned to entity: {b.Date:yyyy-MM-dd}");
 
             _context.Bookings.Add(b);
 
             await _context.SaveChangesAsync();
+
+            
+            Console.WriteLine($"Booking ID: {b.Id}");
+            Console.WriteLine($"Date after saving: {b.Date:yyyy-MM-dd}");
 
             return Ok(b);
         }

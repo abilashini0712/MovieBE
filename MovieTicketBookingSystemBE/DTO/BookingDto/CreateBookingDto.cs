@@ -13,7 +13,9 @@
         public string Seats { get; set; } = string.Empty;
 
 
-        public int RegisterId { get; set; } 
+        public int RegisterId { get; set; }
+
+        public string MovieName { get; set; } = string.Empty;
     }
 }
 
