@@ -1,0 +1,24 @@
+[1mdiff --git a/MovieTicketBookingSystemBE/appsettings.json b/MovieTicketBookingSystemBE/appsettings.json[m
+[1mindex bc99966..a1f22e0 100644[m
+[1m--- a/MovieTicketBookingSystemBE/appsettings.json[m
+[1m+++ b/MovieTicketBookingSystemBE/appsettings.json[m
+[36m@@ -7,7 +7,7 @@[m
+   },[m
+   "AllowedHosts": "*",[m
+ [m
+[31m-  "ConnectionStrings": { "DefaultConnection": "Server=ABILASHINI\\SQLEXPRESS;Database=MovieTicketBookingSystemDB;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True" },[m
+[32m+[m[32m  "ConnectionStrings": { "DefaultConnection": "Server=ABILASHINI-VM\\SQLEXPRESS;Database=MovieTicketBookingSystemDB;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True" },[m
+ [m
+   "AdminSettings": {[m
+     "Email": "cineworldmultiplex@gmail.com",[m
+[36m@@ -36,8 +36,8 @@[m
+ [m
+ [m
+   "Stripe": {[m
+[31m-    "PublishableKey": "",[m
+[31m-    "SecretKey": ""[m
+[32m+[m[32m    "PublishableKey": ""[m
+[32m+[m[41m   [m
+   },[m
+ [m
+   "TicketPricing": {[m
