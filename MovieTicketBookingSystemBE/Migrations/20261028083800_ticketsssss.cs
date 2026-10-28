@@ -6,40 +6,41 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MovieTicketBookingSystemBE.Migrations
 {
     /// <inheritdoc />
-    public partial class paymentss : Migration
+    public partial class ticketsssss : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+           
+
+           
+            
+
             
 
            
 
            
 
-           
-
-           
-
             migrationBuilder.CreateTable(
-                name: "Payments",
+                name: "Tickets",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Time = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cinemas = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Seats = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BookingId = table.Column<int>(type: "int", nullable: false),
-                    StripeSessionId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<long>(type: "bigint", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    QrToken = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payments_Bookings_BookingId",
+                        name: "FK_Tickets_Bookings_BookingId",
                         column: x => x.BookingId,
                         principalTable: "Bookings",
                         principalColumn: "Id",
@@ -48,14 +49,16 @@ namespace MovieTicketBookingSystemBE.Migrations
 
            
 
-           
-
             migrationBuilder.CreateIndex(
-                name: "IX_Payments_BookingId",
-                table: "Payments",
+                name: "IX_Tickets_BookingId",
+                table: "Tickets",
                 column: "BookingId");
 
-            
+            migrationBuilder.CreateIndex(
+                name: "IX_Tickets_QrToken",
+                table: "Tickets",
+                column: "QrToken",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -64,9 +67,8 @@ namespace MovieTicketBookingSystemBE.Migrations
            
 
             migrationBuilder.DropTable(
-                name: "Payments");
+                name: "Tickets");
 
-           
         }
     }
 }

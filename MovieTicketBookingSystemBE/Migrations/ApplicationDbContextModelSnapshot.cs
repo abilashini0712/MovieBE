@@ -243,6 +243,13 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("QrToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Seats")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -254,6 +261,9 @@ namespace MovieTicketBookingSystemBE.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookingId");
+
+                    b.HasIndex("QrToken")
+                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });

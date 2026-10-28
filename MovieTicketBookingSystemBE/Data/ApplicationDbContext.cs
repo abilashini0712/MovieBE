@@ -27,7 +27,21 @@ namespace MovieTicketBookingSystemBE.Data
         public DbSet<Contact> Contacts { get; set; }
 
 
-      
+        protected override void OnModelCreating(
+           ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Ticket>()
+                .HasIndex(t => t.QrToken)
+                .IsUnique();
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Booking)
+                .WithMany()
+                .HasForeignKey(t => t.BookingId);
+        }
+
     }
 }
 

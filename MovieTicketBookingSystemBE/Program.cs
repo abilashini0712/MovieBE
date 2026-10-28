@@ -67,6 +67,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<
     MovieTicketBookingSystemBE.Services.JwtService>();
 
+builder.Services.AddScoped<TicketService>();
 
 var app = builder.Build();
 

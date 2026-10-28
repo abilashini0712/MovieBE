@@ -102,5 +102,44 @@ namespace MovieTicketBookingSystemBE.Controllers
             return Ok(bookings);
         }
 
+
+
+        [HttpGet("available-seats")]
+        public async Task<IActionResult> GetAvailableSeats(
+            [FromQuery] DateTime date,
+            [FromQuery] string time,
+            [FromQuery] string cinema,
+            [FromQuery] string movieName)
+        {
+            if (string.IsNullOrWhiteSpace(time) ||
+                string.IsNullOrWhiteSpace(cinema) ||
+                string.IsNullOrWhiteSpace(movieName))
+            {
+                return BadRequest(
+                    "Date, time, cinema, and movie name are required.");
+            }
+
+            var bookings = await _context.Bookings
+                .Where(b =>
+                    b.Date.Date == date.Date &&
+                    b.Time == time &&
+                    b.Cinemas == cinema &&
+                    b.MovieName == movieName)
+                .Select(b => b.Seats)
+                .ToListAsync();
+
+            var reservedSeats = bookings
+                .Where(seats => !string.IsNullOrWhiteSpace(seats))
+                .SelectMany(seats => seats.Split(
+                    ',',
+                    StringSplitOptions.RemoveEmptyEntries))
+                .Select(seat => seat.Trim())
+                .Distinct()
+                .ToList();
+
+            return Ok(reservedSeats);
+        }
+
+
     }
 }
