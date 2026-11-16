@@ -104,8 +104,9 @@ namespace MovieTicketBookingSystemBE.Controllers
         private readonly IConfiguration _configuration;
 
         public StripeWebhookController(
-            ApplicationDbContext context,
-            IConfiguration configuration)
+    ApplicationDbContext context,
+    IConfiguration configuration,
+    ILogger<StripeWebhookController> logger)
         {
             _context = context;
             _configuration = configuration;
@@ -176,7 +177,7 @@ namespace MovieTicketBookingSystemBE.Controllers
                 return BadRequest("Payment verification failed.");
             }
 
-           
+
             if (payment.Status != "Paid")
             {
                 payment.Status = "Paid";
