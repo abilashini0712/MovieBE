@@ -153,5 +153,128 @@ namespace MovieTicketBookingSystemBE.Controllers
                 bookingId = payment.BookingId
             });
         }
+
+
+        [HttpPost("confirm-session/{sessionId}")]
+        public async Task<IActionResult> ConfirmSession(string sessionId)
+        {
+            try
+            {
+                // 1. Configure Stripe
+                var secretKey = _configuration["Stripe:SecretKey"];
+
+                if (string.IsNullOrWhiteSpace(secretKey))
+                    return StatusCode(500, "Stripe is not configured.");
+
+                StripeConfiguration.ApiKey = secretKey;
+
+                // 2. Retrieve actual session from Stripe
+                var service = new SessionService();
+                var session = await service.GetAsync(sessionId);
+
+                if (session == null || session.PaymentStatus != "paid")
+                {
+                    return Ok(new
+                    {
+                        status = "Pending",
+                        bookingId = 0
+                    });
+                }
+
+                // 3. Get PaymentId from Stripe metadata
+                var paymentIdText =
+                    session.Metadata?.GetValueOrDefault("PaymentId");
+
+                if (!int.TryParse(paymentIdText, out int paymentId))
+                    return BadRequest("Invalid payment metadata.");
+
+                // 4. Find payment in database
+                var payment = await _context.Payments
+                    .FirstOrDefaultAsync(p => p.Id == paymentId);
+
+                if (payment == null ||
+                    payment.StripeSessionId != session.Id ||
+                    payment.Amount != session.AmountTotal ||
+                    !string.Equals(
+                        payment.Currency,
+                        session.Currency,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest("Payment verification failed.");
+                }
+
+                // 5. Find booking
+                var booking = await _context.Bookings
+                    .FirstOrDefaultAsync(b => b.Id == payment.BookingId);
+
+                if (booking == null)
+                    return NotFound("Booking not found.");
+
+                // 6. Update payment status
+                payment.Status = "Paid";
+
+                // 7. Get booked seats
+                var seats = (booking.Seats ?? string.Empty)
+                    .Split(
+                        ',',
+                        StringSplitOptions.RemoveEmptyEntries |
+                        StringSplitOptions.TrimEntries)
+                    .Select(s => s.Trim())
+                    .Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                    .ToList();
+
+                if (seats.Count == 0)
+                    return BadRequest("No seats found for this booking.");
+
+                // 8. Avoid creating duplicate tickets
+                var existingSeats = await _context.Tickets
+                    .Where(t => t.BookingId == booking.Id)
+                    .Select(t => t.Seats)
+                    .ToListAsync();
+
+                var existingSeatSet = new HashSet<string>(
+                    existingSeats,
+                    StringComparer.OrdinalIgnoreCase);
+
+                // 9. Create missing tickets
+                foreach (var seat in seats)
+                {
+                    if (existingSeatSet.Contains(seat))
+                        continue;
+
+                    var ticket = new Ticket
+                    {
+                        BookingId = booking.Id,
+                        Date = booking.Date,
+                        Time = booking.Time,
+                        Cinemas = booking.Cinemas,
+                        Seats = seat,
+                        QrToken = Guid.NewGuid().ToString("N"),
+                        IsUsed = false
+                    };
+
+                    _context.Tickets.Add(ticket);
+                    existingSeatSet.Add(seat);
+                }
+
+                // 10. Save payment and tickets
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    status = "Paid",
+                    bookingId = payment.BookingId
+                });
+            }
+            catch (StripeException ex)
+            {
+                return StatusCode(
+                    502,
+                    "Unable to verify payment with Stripe: " + ex.Message);
+            }
+        }
+
+
     }
 }
